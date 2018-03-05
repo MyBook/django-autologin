@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.utils.cache import add_never_cache_headers
 from django.core.signing import TimestampSigner, BadSignature
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.deprecation import MiddlewareMixin
 
 from . import app_settings
@@ -14,6 +14,8 @@ class AutomaticLoginMiddleware(MiddlewareMixin):
             return
 
         r = redirect(strip_token(request.get_full_path()))
+
+        User = get_user_model()
 
         try:
             pk = int(token.split(':', 1)[0])
